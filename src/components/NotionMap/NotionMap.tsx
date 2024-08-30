@@ -35,6 +35,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { CardDescription, CardTitle } from "@/components/ui/card";
 
 import markerSvg from "../../../public/map-pin.svg";
 
@@ -129,7 +130,11 @@ export default function NotionMap({
 
   return (
     <MapContextMenu handleCreateLocation={handleCreateLocation}>
-      <div onContextMenu={handleContextMenu} onFocus={handleMapSync}>
+      <div
+        className="notion-maps"
+        onContextMenu={handleContextMenu}
+        onFocus={handleMapSync}
+      >
         <MapContainer
           center={[mapHeight / 2, mapWidth / 2]}
           crs={CRS.Simple}
@@ -149,10 +154,12 @@ export default function NotionMap({
                 position={[location.coordinateY, location.coordinateX]}
               >
                 <Popup>
-                  <div className="prose">
-                    <Badge>{location.type}</Badge>
-                    <h1>{location.name}</h1>
-                    <p>{location.description}</p>
+                  <div className="mb-8 flex flex-col space-y-2">
+                    <div>
+                      <Badge variant="secondary">{location.type}</Badge>
+                    </div>
+                    <CardTitle>{location.name}</CardTitle>
+                    <CardDescription>{location.description}</CardDescription>
                   </div>
 
                   <div className="flex gap-2">
@@ -163,7 +170,7 @@ export default function NotionMap({
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="secondary">Delete</Button>
+                        <Button variant="ghost">Delete</Button>
                       </AlertDialogTrigger>
                       <AlertDialogPortal>
                         <AlertDialogContent>
