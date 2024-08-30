@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
-import { fetchMapData, NotionMapData } from "@/lib/notion";
+import { NotionMapData } from "@/lib/notion";
 import NotionMap from "@/components/NotionMap";
+import { getCurrentMap } from "@/app/actions";
 
 interface MapPageProps {
   params: {
@@ -15,7 +16,7 @@ export default async function MapPage({ params }: MapPageProps) {
   let notionMap: NotionMapData;
 
   try {
-    notionMap = await fetchMapData(id);
+    notionMap = await getCurrentMap(id);
   } catch (error) {
     console.error("Error fetching Notion data:", error);
     return notFound(); // Show 404 page if the database is not found or error occurs
@@ -28,6 +29,7 @@ export default async function MapPage({ params }: MapPageProps) {
   return (
     <div>
       <NotionMap
+        databaseId={id}
         locations={notionMap.locations}
         mapHeight={notionMap.mapHeight}
         mapImageUrl="https://i.imgur.com/NrRgUWE.jpeg"

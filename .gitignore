@@ -37,3 +37,5 @@ next-env.d.ts
 
 .idea/
 .fleet/
+
+repopack-output.txt

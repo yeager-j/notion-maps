@@ -1,9 +1,13 @@
 import { Client, isFullDatabase, isFullPage } from "@notionhq/client";
-import { QueryDatabaseResponse } from "@notionhq/client/build/src/api-endpoints";
+import {
+  CreatePageParameters,
+  QueryDatabaseResponse,
+} from "@notionhq/client/build/src/api-endpoints";
 
 import { getPropertyValue, hasCorrectProperties } from "./utils";
 
 export interface NotionLocation {
+  id: string;
   name: string;
   type: string;
   description: string;
@@ -43,8 +47,9 @@ export async function fetchMapData(databaseId: string): Promise<NotionMapData> {
     .filter((page) => {
       return !getPropertyValue(page.properties["__is_metadata"]);
     })
-    .map((page) => {
+    .map<NotionLocation>((page) => {
       return {
+        id: page.id,
         name: getPropertyValue(page.properties["Name"]) as string,
         type: getPropertyValue(page.properties["Type"]) as string,
         description: getPropertyValue(page.properties["Description"]) as string,
@@ -90,12 +95,19 @@ export async function fetchMapData(databaseId: string): Promise<NotionMapData> {
 }
 
 export async function findNotionPages(query: string) {
-  const result = await notion.search({
+  return notion.search({
     query,
     filter: { value: "database", property: "object" },
   });
+}
 
-  console.log(result);
+export async function createNotionPage(params: CreatePageParameters) {
+  return notion.pages.create(params);
+}
 
-  return result;
+export async function deleteNotionPage(id: string) {
+  return notion.pages.update({
+    page_id: id,
+    archived: true,
+  });
 }

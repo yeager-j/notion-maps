@@ -68,7 +68,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-.leaflet-container a {
-  color: inherit !important;
-}
