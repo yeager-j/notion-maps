@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown, LoaderCircle } from "lucide-react";
 import { startTransition, useState } from "react";
 import { SearchResponse } from "@notionhq/client/build/src/api-endpoints";
 import { isFullDatabase } from "@notionhq/client";
@@ -33,8 +33,9 @@ export default function NotionSearch() {
 
   async function handleSearch(query: string) {
     if (query.length > 2) {
+      setLoading(true);
+
       startTransition(async () => {
-        setLoading(true);
         const data = await searchNotionDatabase(query); // Call server action
         setSearch(data);
         setLoading(false);
@@ -64,8 +65,12 @@ export default function NotionSearch() {
             placeholder="Search Notion pages..."
           />
           <CommandList>
-            <CommandEmpty>No maps found.</CommandEmpty>
-            {loading && <CommandLoading>Fetching pages…</CommandLoading>}
+            {!search && !loading && <CommandEmpty>No maps found.</CommandEmpty>}
+            {loading && (
+              <CommandLoading className="flex items-center justify-center p-6">
+                <LoaderCircle className="text-muted-foreground size-4 animate-spin" />
+              </CommandLoading>
+            )}
 
             <CommandGroup>
               {search?.results
