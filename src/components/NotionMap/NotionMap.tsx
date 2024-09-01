@@ -14,7 +14,6 @@ import {
   useState,
   MouseEvent,
 } from "react";
-import { isFullPage } from "@notionhq/client";
 import { toast } from "sonner";
 
 import { LocationType, NotionMapProps } from "@/components/NotionMap/types";
@@ -93,21 +92,8 @@ export default function NotionMap({
           ),
           {
             loading: "Loading...",
-            success: (newLocation) => {
-              if (isFullPage(newLocation)) {
-                setLocations((prevLocations) => [
-                  ...prevLocations,
-                  {
-                    id: newLocation.id,
-                    name: "Untitled Location",
-                    type: type,
-                    description: "Newly created location",
-                    coordinateX: clickedPosition.lng,
-                    coordinateY: clickedPosition.lat,
-                    detailsUrl: newLocation.url,
-                  },
-                ]);
-              }
+            success: () => {
+              handleMapSync();
 
               return "Successfully created a location.";
             },
@@ -184,15 +170,11 @@ export default function NotionMap({
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction asChild>
-                              <Button
-                                onClick={() =>
-                                  handleDeleteLocation(location.id)
-                                }
-                                variant="destructive"
-                              >
-                                Delete
-                              </Button>
+                            <AlertDialogAction
+                              isDestructive
+                              onClick={() => handleDeleteLocation(location.id)}
+                            >
+                              Delete
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>

@@ -100,10 +100,15 @@ AlertDialogDescription.displayName =
 
 const AlertDialogAction = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Action>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
->(({ className, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> & {
+    isDestructive?: boolean;
+  }
+>(({ className, isDestructive, ...props }, ref) => (
   <AlertDialogPrimitive.Action
-    className={cn(buttonVariants(), className)}
+    className={cn(
+      buttonVariants({ variant: isDestructive ? "destructive" : "default" }),
+      className,
+    )}
     ref={ref}
     {...props}
   />
